@@ -295,11 +295,42 @@
 <code>=SUMIFS(D:D,A:A,4,B:B,"田中",C:C,"備品")</code><br />
 （データが A:D の1行目ヘッダー、2行目からの場合は <code>D2:D100</code>
 のように範囲を絞ってもよい）</p></li>
+<li><p><strong>数式の読み方（引数ごとの解説）</strong></p>
+<table>
+<thead>
+<tr><th>引数の位置</th><th>値</th><th>意味</th></tr>
+</thead>
+<tbody>
+<tr><td>第1引数（合計範囲）</td><td><code>D:D</code></td><td><strong>合計したい数値が入っている列</strong>（＝金額列）。条件に合った行の D 列の値だけが足される</td></tr>
+<tr><td>第2引数（条件範囲1）</td><td><code>A:A</code></td><td>1つ目の条件を調べる列（＝月列）</td></tr>
+<tr><td>第3引数（条件1）</td><td><code>4</code></td><td>A 列が <strong>4</strong>（＝4月）である行だけを対象にする</td></tr>
+<tr><td>第4引数（条件範囲2）</td><td><code>B:B</code></td><td>2つ目の条件を調べる列（＝担当列）</td></tr>
+<tr><td>第5引数（条件2）</td><td><code>"田中"</code></td><td>B 列が <strong>田中</strong> である行だけを対象にする</td></tr>
+<tr><td>第6引数（条件範囲3）</td><td><code>C:C</code></td><td>3つ目の条件を調べる列（＝カテゴリ列）</td></tr>
+<tr><td>第7引数（条件3）</td><td><code>"備品"</code></td><td>C 列が <strong>備品</strong> である行だけを対象にする</td></tr>
+</tbody>
+</table>
+<p>つまり「<strong>A列が4 かつ B列が田中 かつ C列が備品</strong>」をすべて満たす行の D 列（金額）だけを合計する、という意味です。</p></li>
 <li><p><strong>解説</strong><br />
 <code>SUMIFS</code> は
 <strong>合計する列を最初</strong>に書き、その後に「条件範囲1, 条件1,
 条件範囲2, 条件2,
-…」と並べます。条件がすべて満たされた行だけが加算されます。</p></li>
+…」と並べます。条件がすべて満たされた行だけが加算されます。<br />
+構文: <code>=SUMIFS(合計範囲, 条件範囲1, 条件1, [条件範囲2, 条件2], …)</code></p></li>
+<li><p><strong>別の書き方</strong></p>
+<ol type="1">
+<li><p><strong>範囲を明示的に絞る書き方</strong>（推奨：大きなシートではパフォーマンスが向上）<br />
+<code>=SUMIFS(D2:D100,A2:A100,4,B2:B100,"田中",C2:C100,"備品")</code></p></li>
+<li><p><strong>セル参照で条件を指定する書き方</strong>（条件を変えやすい）<br />
+条件をセルに入れておく（例: I2=4, J2="田中", K2="備品"）場合:<br />
+<code>=SUMIFS(D:D,A:A,I2,B:B,J2,C:C,K2)</code></p></li>
+<li><p><strong>SUMPRODUCT で同じ結果を得る書き方</strong>（古い Excel や条件が複雑なとき）<br />
+<code>=SUMPRODUCT((A2:A100=4)*(B2:B100="田中")*(C2:C100="備品")*D2:D100)</code><br />
+※ 各条件を <code>(条件)</code> で囲み <code>*</code> で AND 結合。TRUE=1, FALSE=0 として掛け算で絞り込む仕組み。</p></li>
+<li><p><strong>FILTER を使う書き方</strong>（Excel 365 / Excel 2021 以降）<br />
+<code>=SUM(FILTER(D2:D100,(A2:A100=4)*(B2:B100="田中")*(C2:C100="備品")))</code><br />
+※ FILTER で条件に合う行だけを抽出し、SUM で合計。中間結果を確認しやすい利点がある。</p></li>
+</ol></li>
 </ul>
 <h3 id="問題-1-2sumif">問題 1-2（SUMIF）</h3>
 <p><strong>条件</strong>: カテゴリが「消耗品」の金額合計。</p>
